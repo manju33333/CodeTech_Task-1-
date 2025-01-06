@@ -1,0 +1,253 @@
+// Logic Gates(AND, OR, NOT)
+//AND Gate
+//Design Code
+module and_gate(input a,b,output out);
+  assign out = a & b;
+endmodule
+// TestBench
+module tb();
+  //input in the dut to reg and output of the dut to wire
+  reg a,b;
+  wire out;
+  //instantiation DUT 
+  and_gate DUT(a,b,out);
+  //assigning values for a,b 
+  initial
+    begin
+      a = 1;b = 1;
+      #5;
+      a = 0;b = 1;
+      #5;
+      a = 1;b = 0;
+      #5;
+      a = 0;b = 0;
+      #5;
+    end
+  //waveform value change dump
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  //display
+  initial
+    begin
+      $monitor("a = %0d, b = %0d,out = %0d",a,b,out);
+    end
+endmodule
+
+
+//OR Gate
+//Design Code
+module or_gate(input a,b,output out);
+  assign out = a|b;
+endmodule
+//TestBench
+module tb();
+  reg a,b;
+  wire out;
+  or_gate DUT(a,b,out);
+  initial
+    begin
+      a = 0;b = 0;
+      #5;
+      a = 0;b = 1;
+      #5;
+      a = 1;b = 0;
+      #5;
+      a = 1;b = 1;
+      #5;
+    end
+  initial 
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  initial
+    begin
+      $monitor("a = %0d, b = %0d,out = %0d",a,b,out);
+    end
+endmodule
+
+
+//NOT Gate
+//Design Code
+module not_gate(input a,output out);
+  assign out = ~a;
+endmodule
+//TestBench
+module tb();
+  reg a;
+  wire out;
+  not_gate DUT(a,out);
+  initial
+    begin
+      a = 0;
+      #5;
+      a = 1;
+      #5;
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  
+  initial
+    begin
+      $monitor("a = %0d,out = %0d",a,out);
+    end 
+endmodule
+
+
+//Half Adder
+//Design Code
+module halfadder(output wire sum,carry,input a,b);
+  assign sum = a^b;
+  assign carry = a&b;
+endmodule
+//TestBench
+module tb();
+  wire sum,carry;
+  reg a,b;
+  halfadder DUT(sum,carry,a,b);
+  initial
+    begin
+      a = 0;b = 0;
+      #5;
+      a = 0;b = 1;
+      #5;
+      a = 1;b = 0;
+      #5;
+      a = 1;b = 1;
+      #5;
+    end
+  initial
+    begin
+      $monitor("a=%b b=%b sum=%b carry=%b",a,b,sum,carry);
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+endmodule
+
+//Full Adder
+//Design Code
+module fulladder(output wire sum,carry,input a,b,c);
+  assign sum = a^b^c;
+  assign carry = a&b|b&c|c&a;
+endmodule
+//TestBench
+module tb();
+  wire sum,carry;
+  reg a,b,c;
+  fulladder DUT(sum,carry,a,b,c);
+  initial
+    begin
+      a = 0;b = 0;c = 0;
+      #5;
+      a = 0;b = 0;c = 1;
+      #5;
+      a = 0;b = 1;c = 0;
+      #5;
+      a = 0;b = 1;c = 1;
+      #5;
+      a = 1;b = 0;c = 0;
+      #5;
+      a = 1;b = 0;c = 1;
+      #5; 
+      a = 1;b = 1;c = 0;
+      #5; 
+      a = 1;b = 1;c = 1;
+      #5; 
+    end
+  initial
+    begin
+      $monitor("a=%b b=%b c=%b sum=%b carry=%b",a,b,c,sum,carry);
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+endmodule
+
+
+//2x1 MUX
+//Design Code
+module mux_2to1(input a, input b, input sel, output y);
+    assign y = sel ? b : a;
+endmodule
+//TestBench
+module tb_mux_2to1;
+    // Inputs
+    reg a, b, sel;
+    // Output
+    wire y;
+
+    // Instantiate the 2-to-1 MUX
+    mux_2to1 uut (
+        .a(a),
+        .b(b),
+        .sel(sel),
+        .y(y)
+    );
+
+    // Test stimulus
+    initial begin
+        $monitor("a=%b, b=%b, sel=%b, y=%b", a, b, sel, y);
+
+        // Test Case 1: sel = 0, y should be a
+        a = 0; b = 0; sel = 0; #10;
+        a = 1; b = 0; sel = 0; #10;
+
+        // Test Case 2: sel = 1, y should be b
+        a = 0; b = 1; sel = 1; #10;
+        a = 1; b = 1; sel = 1; #10;
+
+        $finish;
+    end
+endmodule
+
+
+//4x1 MUX
+//Design Code
+module mux_4to1(input [3:0] in, input [1:0] sel, output y);
+    assign y = in[sel];
+endmodule
+//TestBench
+module tb_mux_4to1;
+    // Inputs
+    reg [3:0] in;
+    reg [1:0] sel;
+    // Output
+    wire y;
+
+    // Instantiate the 4-to-1 MUX
+    mux_4to1 uut (
+        .in(in),
+        .sel(sel),
+        .y(y)
+    );
+
+    // Test stimulus
+    initial begin
+        $monitor("in=%b, sel=%b, y=%b", in, sel, y);
+
+        // Test Case 1: sel = 00, y should be in[0]
+        in = 4'b1010; sel = 2'b00; #10;
+
+        // Test Case 2: sel = 01, y should be in[1]
+        sel = 2'b01; #10;
+
+        // Test Case 3: sel = 10, y should be in[2]
+        sel = 2'b10; #10;
+
+        // Test Case 4: sel = 11, y should be in[3]
+        sel = 2'b11; #10;
+
+        $finish;
+    end
+endmodule
